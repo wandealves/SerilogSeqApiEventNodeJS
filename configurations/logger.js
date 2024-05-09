@@ -28,7 +28,7 @@ const setup = () => {
     ),
     transports: [
       new SeqTransport({
-        serverUrl: "http://localhost:5341",
+        serverUrl: process.env.SEQ_URL || "http://localhost:5341",
         onError: e => {
           console.error(e);
         }

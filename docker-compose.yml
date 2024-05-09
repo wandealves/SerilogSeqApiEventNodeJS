@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+    container_name: app
+    tty: true
+    ports:
+      - "3000:3000"
+    networks:
+      - appnet
+    volumes:
+      - .:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3000/health-check || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
+    depends_on:
+      - seq
+    environment:
+      - SEQ_URL=http://seq # Defina a URL do Seq como uma variável de ambiente
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_ADMIN_PASSWORD=admin
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  node_modules:
