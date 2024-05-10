@@ -3,12 +3,13 @@ const { combine, timestamp, json, printf } = winston.format;
 const { SeqTransport } = require("@datalust/winston-seq");
 
 const logLevels = {
-  fatal: 0,
-  error: 1,
-  warn: 2,
-  info: 3,
-  debug: 4,
-  trace: 5
+  error: 0,
+  warn: 1,
+  info: 2,
+  http: 3,
+  verbose: 4,
+  debug: 5,
+  silly: 6
 };
 
 const customFormat = printf(({ level, message, label, timestamp }) => {
@@ -24,11 +25,10 @@ const setup = () => {
         format: "YYYY-MM-DD hh:mm:ss.SSS A"
       }),
       json()
-      //customFormat
     ),
     transports: [
       new SeqTransport({
-        serverUrl: process.env.SEQ_URL || "http://localhost:5341",
+        serverUrl: "http://seq:5341",
         onError: e => {
           console.error(e);
         }
